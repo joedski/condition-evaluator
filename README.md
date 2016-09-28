@@ -13,19 +13,19 @@ Quick Example
 ```js
 // app/condition/predicates.js
 
-export const isVisited({ context, parameter }) => {
-  return context.referent.visited === parameter;
+export const isVisited = ({ referent, parameter }) => {
+  return referent.visited === parameter;
 };
 ```
 
 ```js
 // app/selectors/index.js
 
-export const page( state, pageId ) => {
+export const page = ( state, pageId ) => {
   return state.pages[ pageId ];
 }
 
-export const currentPage( state ) => {
+export const currentPage = ( state ) => {
   return page( state, state.interaction.currentPage );
 }
 ```
@@ -36,10 +36,7 @@ import Evaluate from 'condition-evaluator';
 import Referents from 'condition-evaluator/providers/referents';
 import basicPredicates from 'condition-evaluator/predicates';
 
-import {
-  page, // ( State, PageId ) => Page
-  currentPage // ( State ) => Page
-} from '../selectors';
+import { page, currentPage } from '../selectors';
 import * as predicates from './predicates';
 
 export default Evaluate({
@@ -77,9 +74,29 @@ let condition = {
   isVisited: false
 };
 
-evalCondition( state, condition ) // => false
+evalCondition( state, condition ) // => true!
 ```
 
+### Another Amusing Predicate
 
+```js
+export const which = ({ parameter, evaluate }) => {
+  let keys = Object.keys( parameter );
+  return keys.find( key => evaluate( parameter[ key ] ) )
+}
+```
 
+```js
+import evaluate from './condition/evaluate';
 
+let state = {};
+
+evaluate( state, {
+  which: {
+    "foo": { always: false },
+    "bar": { always: true },
+    "baz": { always: false },
+  }
+});
+// => "bar"
+```

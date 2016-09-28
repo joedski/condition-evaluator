@@ -24,7 +24,8 @@ export const any = ({ parameter, evaluate }) => {
 	}
 	else {
 		return subConditions.some( evaluate );
-	}}
+	}
+};
 
 // every: { are: any, of: Array<Condition> } => boolean
 // Use:
@@ -52,9 +53,14 @@ export const every = ({ parameter, evaluate }) => {
 	else {
 		return subConditions.every( evaluate );
 	}
-}
+};
 
 // not: Condition => boolean
 export const not = ({ parameter, evaluate }) => {
 	return ! evaluate( parameter );
-}
+};
+
+// not: Condition => Any
+export const always = ({ parameter }) => {
+	return parameter;
+};
