@@ -112,7 +112,7 @@ every:
 
 And these read, more or less "Every of (page 254 is visited; [reader] is a hoopy frood) is true".
 
-Of course, for your Application to understand this, you'll need to write Predicates for `isVisited` and `isHoopyFrood`.  You'll also probably want to use the Referents EvaluationContextProvider, giving it ReferentSelectors for `page` and a default one which points to the Reader.
+Of course, for your Application to understand this, you'll need to write Predicates for `isVisited` and `isHoopyFrood`.  Maybe you even want slightly different behavior from the basic one for your `every` Predicate.  You'll also probably want to use the Referents EvaluationContextProvider, giving it ReferentSelectors for `page` and a default one which points to the Reader.
 
 
 
