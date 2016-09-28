@@ -1,7 +1,59 @@
 Condition Evaluator
 ===================
 
-An Evaluator for Simple Declarative Condition DSLs.  Load Conditions from a story or configuration file, specify the Predicates and Selectors in your App, and Evaluate.
+An Evaluator for Simple Declarative Condition DSLs.
+
+It was written with the intention to abstract the creation and use of conditions in serialized configuration files, such as story or slideshow descriptions.
+
+
+
+API
+-----
+
+### Basic Use
+
+#### ES6
+
+```js
+import Evaluate from 'condition-evaluator';
+import Referents from 'condition-evaluator/providers/referents';
+import * as basicPredicates from 'condition-evaluator/predicates';
+
+import * as predicates from 'my-app/condition/predicates';
+import { page, currentPage } from 'my-app/selectors';
+
+export default Evaluate({
+  ...basicPredicates,
+  ...predicates
+}, [
+  Referents({
+    default: { page: currentPage },
+    page: page
+  })
+]);
+```
+
+#### ES5
+
+```js
+var Evaluate = require( 'condition-evaluator' ).default;
+var Referents = require( 'condition-evaluator/providers/referents' ).default;
+var basicPredicates = require( 'condition-evaluator/predicates' );
+
+var predicates = require( 'my-app/condition/predicates' );
+var selectors = require( 'my-app/selectors' );
+
+export default Evaluate( Object.assign(
+  {},
+  basicPredicates,
+  predicates
+), [
+  Referents({
+    default: { page: currentPage },
+    page: page
+  })
+]);
+```
 
 
 
@@ -11,35 +63,32 @@ Quick Example
 > Note: Written in ES6.
 
 ```js
-// app/condition/predicates.js
+//////// Predicates
 
-export const isVisited = ({ referent, parameter }) => {
+const isVisited = ({ referent, parameter }) => {
   return referent.visited === parameter;
 };
-```
 
-```js
-// app/selectors/index.js
+//////// Selectors
 
-export const page = ( state, pageId ) => {
+const page = ( state, pageId ) => {
   return state.pages[ pageId ];
 }
 
-export const currentPage = ( state ) => {
+const currentPage = ( state ) => {
   return page( state, state.interaction.currentPage );
 }
-```
 
-```js
-// app/condition/evaluate.js
+//////// Our Evaluator
+
 import Evaluate from 'condition-evaluator';
 import Referents from 'condition-evaluator/providers/referents';
-import basicPredicates from 'condition-evaluator/predicates';
+import * as basicPredicates from 'condition-evaluator/predicates';
 
 import { page, currentPage } from '../selectors';
 import * as predicates from './predicates';
 
-export default Evaluate({
+const evaluate = Evaluate({
   // adds `any`, `every`, and `not`.
   ...basicPredicates,
   // adds our app-specific predicates.
@@ -50,13 +99,8 @@ export default Evaluate({
     page: page
   })
 ]);
-```
 
-With the above, you can do this:
-
-```js
-import evalCondition from './condition/evaluate';
-import store from './store'
+//////// Trial Run
 
 let state = {
   pages: {
@@ -69,25 +113,19 @@ let state = {
   }
 };
 
-let condition = {
-  page: '3',
-  isVisited: false
-};
-
-evalCondition( state, condition ) // => true!
+evalCondition( state, { page: 3, isVisited: false }) // => true!
+evalCondition( state, { isVisited: false }) // => false!  page 2 .visited === true.
 ```
 
 ### Another Amusing Predicate
 
 ```js
-export const which = ({ parameter, evaluate }) => {
+const which = ({ parameter, evaluate }) => {
   let keys = Object.keys( parameter );
   return keys.find( key => evaluate( parameter[ key ] ) )
 }
-```
 
-```js
-import evaluate from './condition/evaluate';
+const evaluate = Evaluate({ which });
 
 let state = {};
 
