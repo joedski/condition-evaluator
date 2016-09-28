@@ -1,17 +1,22 @@
 
 export default referents => {
-	let referents = { ...referents };
+	referents = { ...referents };
 
 	let defaultReferentDefinition = referents.default;
 	delete referents.default;
 
-	// NOTE: This supports only one default.
-	let defaultReferentDefinitionType = Object.keys( defaultReferentDefinition )[ 0 ];
+	let defaultReferentDefinitionType;
+	let defaultReferent;
 
-	let defaultReferent = {
-		type: defaultReferentDefinitionType,
-		selector: defaultReferentDefinition[ defaultReferentDefinitionType ],
-	};
+	if( defaultReferentDefinition ) {
+		// NOTE: This supports only one default.
+		defaultReferentDefinitionType = Object.keys( defaultReferentDefinition )[ 0 ];
+
+		defaultReferent = {
+			type: defaultReferentDefinitionType,
+			selector: defaultReferentDefinition[ defaultReferentDefinitionType ],
+		};
+	}
 
 	let referentTypes = Object.keys( referents );
 
@@ -33,28 +38,33 @@ export default referents => {
 			};
 		}
 		else if( ! prevReferent.referent ) {
-			nextReferent = {
-				referent: defaultReferent.selector( appContext ),
-				referentType: defaultReferent.type
-			};
+			if( defaultReferent ) {
+				nextReferent = {
+					referent: defaultReferent.selector( appContext ),
+					referentType: defaultReferent.type
+				};
+			}
+			else {
+				nextReferent = {};
+			}
 		}
 		else {
 			nextReferent = prevReferent;
 		}
 
 		// Lastly, delete all referent keys from the condition.
-		let conditionWithoutRefs = referents.reduce(
-			( context, refType ) => {
-				delete context[ refType ];
-				return context;
+		let conditionWithoutRefs = referentTypes.reduce(
+			( condition, refType ) => {
+				delete condition[ refType ];
+				return condition;
 			},
 			{ ...condition }
 		);
 
 		return {
 			...evalContext,
-			{ condition: conditionWithoutRefs },
-			nextReferent
+			condition: conditionWithoutRefs,
+			...nextReferent
 		};
 	};
 };
