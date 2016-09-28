@@ -80,8 +80,8 @@ module.exports = Evaluate( Object.assign(
   predicates
 ), [
   Referents({
-    default: { page: currentPage },
-    page: page
+    default: { page: selectors.currentPage },
+    page: selectors.page
   })
 ]);
 ```
