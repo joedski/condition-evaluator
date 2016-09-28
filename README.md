@@ -54,6 +54,11 @@ Creates the condition evaluator using the supplied PredicateMap and EvaluationCo
   - `evaluate: (Condition => Result)` evaluates a sub-condition.
   - `parameter: Any` the parameter for this Predicate specified in the Condition.
 
+- If you use the Referents EvaluationContextProvider, you get two more props on the EvaluationContextLayer:
+  - `referent?: Any` an object or value for use by your Predicates as additional context, usually pulled from provided AppContext.
+  - `referentType?: string` the ReferentKey that was matched for this Referent.
+  - Note: If you don't define a DefaultReferentSelector, you may end up with no referent conditions which do not specify one!  Sub-conditions still inherit the Referent of their parent-condition, though, at least if the parent has one.
+
 
 ### Referents and ReferentSelectors
 
