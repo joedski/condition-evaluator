@@ -97,9 +97,9 @@ Even an empty object is a Condition, though one which always returns `undefined`
 Suppose you needed somewhere else in a story to check if the reader has visited a certain page, and whether or not they're a hoopy frood.  You might write something like this:
 
 ```json
-{ every: [
-  { page: 254, isVisited: true },
-  { isHoopyFrood: true }
+{ "every": [
+  { "page": 254, "isVisited": true },
+  { "isHoopyFrood": true }
 ]}
 ```
 
