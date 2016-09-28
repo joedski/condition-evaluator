@@ -5,6 +5,21 @@ An Evaluator for Simple Declarative Condition DSLs.
 
 It was written with the intention to abstract the creation and use of conditions in serialized configuration files, such as story or slideshow descriptions.
 
+In short, given this:
+
+```json
+{
+  "isHoopyFrood": true,
+  "isDeadForTaxReasons": false,
+  "every": [
+    { "page": "2a", "hasHipness": "hip" },
+    { "page": "3b", "hasImprobability": "infinite" }
+  ]
+}
+```
+
+You only need to define the actual interesting meaningful parts: the testing functions `isHoopyFrood`, `isDeadForTaxReasons`, `hasHipness`, `hasImprobability`, and the selector function `page`.
+
 
 
 API
@@ -12,7 +27,7 @@ API
 
 ### Evaluator
 
-> `( PredicateMap, Array<EvaluationContextProvider> ) => AppContext => Condition => Result`
+`( PredicateMap, Array<EvaluationContextProvider> ) => AppContext => Condition => Result`
 
 Creates the condition evaluator using the supplied PredicateMap and EvaluationContextProviders.
 
@@ -30,17 +45,43 @@ Creates the condition evaluator using the supplied PredicateMap and EvaluationCo
 
 ### Predicate
 
-> TODO: Finish this part
+`EvaluationContextLayer => Result`
+
+- EvaluationContextLayer: An Object with the following properties:
+  - `context: AppContext` the context that you supplied to the Evaluator.
+  - `condition: Condition` the current Condition under consideration.
+    - It may be different from the one originally passed in if a EvaluationContextProvider modified it.
+  - `evaluate: (Condition => Result)` evaluates a sub-condition.
+  - `parameter: Any` the parameter for this Predicate specified in the Condition.
 
 
 ### Referents and ReferentSelectors
 
-> TODO: Finish this part
+Condition Evaluator comes with one EvaluationContextProvider: Referents, which has the following type:
+
+`ReferentsKeySelectorMap => EvaluationContextProvider`
+
+- ReferentsKeySelectorMap: `{ default: DefaultReferentMapping, [ReferentKey: string]: ReferentSelector }` Object mapping keys to your Selectors.
+  - default: `DefaultReferentMapping: { [ReferentKey: string]: DefaultReferentSelector }` A special key which provides a mapping to use in case there are no ReferentKeys on a Condition.
+    - Usually, the ReferentKey will be the same as one of the ReferentKeys in the rest of the ReferentsKeySelectorMap.
+    - Omitting this means Conditions with no defined ReferentKey will also have no Referent.
+- ReferentSelector: `( AppContext, ReferentSelectorParameter ) => Referent`
+  - AppContext is the context you gave to the Evaluator.
+  - ReferentSelectorParameter is the parameter value supplied on the Condition to that Key.
+    - Example: `condition = { "page": "foo", "isVisited": true }`, if `page` is a ReferentKey, then the ReferentSelectorParameter here is `"foo"`.
+- DefaultReferentSelector: `AppContext => Referent`
+  - As DefaultReferentSelectors are used when there are no ReferentKeys on a Condition, they also don't have a parameter, instead receiving only the AppContext in which the Evaluator is operating.
+
+The Referents EvaluationContextProvider removes any keys on a Condition which match one of its ReferentSelectors' keys, using the first one it finds to select from the AppContext a concrete Referent.  If no Referent is specified, it will try to use the DefaultReferentSelector if one is provided.  If no DefaultReferentSelector is provided, then Conditions without any Referent key will have no Referent!  Whether that's a bad thing or not depends on your use case.
+
+Referents is exported as a Factory, so to get the actual EvaluationContextProvider that you give to Evaluator, you need to call the exported function with a parameter, in this case being the key-to-ReferentSelector mapping.
 
 
-### Basic Use
 
-#### ES6
+Basic Use
+---------
+
+### ES6
 
 > If you're unfamiliar with ES6 and ES2015 features, pore through the excellent [Learn ES2015 on Babel's Site](https://babeljs.io/docs/learn-es2015/).
 
@@ -63,7 +104,7 @@ export default Evaluate({
 ]);
 ```
 
-#### ES5
+### ES5
 
 ```js
 // Dealing with importing transpiled es6 default exports into an es5 environment.
@@ -185,8 +226,8 @@ let state = {
 
 let evalCurrentCondition = evalCondition( state );
 
-evalCurrentCondition( { page: 3, isVisited: false }) // => true!
-evalCurrentCondition( { isVisited: false }) // => false!  page 2 .visited === true.
+evalCurrentCondition({ page: 3, isVisited: false }) // => true!
+evalCurrentCondition({ isVisited: false }) // => false!  page 2 .visited === true.
 ```
 
 ### Another Amusing Predicate
