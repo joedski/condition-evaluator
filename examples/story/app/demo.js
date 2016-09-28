@@ -12,5 +12,7 @@ let state = {
 	}
 };
 
-console.log( evalCondition( state, { page: '3', isVisited: false }) ); // => true, because pages['3'].visited is indeed false.
-console.log( evalCondition( state, { isVisited: true }) ); // => true, because the current page, pages['2'], has .visited = true.
+let evalCurrentCond = evalCondition( state );
+
+console.log( evalCurrentCond({ page: '3', isVisited: false }) ); // => true, because pages['3'].visited is indeed false.
+console.log( evalCurrentCond({ isVisited: true }) ); // => true, because the current page, pages['2'], has .visited = true.
