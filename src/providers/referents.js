@@ -22,7 +22,7 @@ export default referents => {
 
 	return appContext => evalContext => {
 		let { condition } = evalContext;
-		let conditionReferentType = referents.find( refType => refType in evalContext );
+		let conditionReferentType = referentTypes.find( refType => refType in condition );
 		let conditionReferentParameter;
 		let nextReferent;
 		let prevReferent = {
@@ -31,7 +31,7 @@ export default referents => {
 		};
 
 		if( conditionReferentType ) {
-			conditionReferentParameter = evalContext[ conditionReferentType ];
+			conditionReferentParameter = condition[ conditionReferentType ];
 			nextReferent = {
 				referent: referents[ conditionReferentType ]( appContext, conditionReferentParameter ),
 				referentType: conditionReferentType

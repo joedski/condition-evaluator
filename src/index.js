@@ -33,7 +33,7 @@ const evalPredicates = ( predicateMap, evalContext ) => {
 		predicateName =>
 			predicateMap[ predicateName ]({
 				...evalContext,
-				parameter: condition[ parameter ]
+				parameter: condition[ predicateName ]
 			})
 	);
 }

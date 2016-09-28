@@ -1,7 +1,7 @@
 
 import Evaluate from 'condition-evaluator';
 import Referents from 'condition-evaluator/providers/referents';
-import basicPredicates from 'condition-evaluator/predicates';
+import * as basicPredicates from '../src/predicates';
 
 import { page, currentPage } from '../selectors';
 import * as predicates from './predicates';
