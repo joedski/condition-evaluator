@@ -1,5 +1,5 @@
-Condition DSL Algorithm: Musing
-===============================
+Type Descriptions
+=================
 
 ```
 Evaluator: ( Predicates, Array<EvaluationContextProvider> ) => AppContext => Condition => Result
@@ -12,7 +12,7 @@ Predicates: { [PredicateName: string]: Predicate }
 
 Predicate: EvaluationContextLayer => Result
 
-EvaluationContextProvider: ProviderParameters => Context => BaseEvaluationContextLayer => BaseEvaluationContextLayer
+EvaluationContextProvider: Context => BaseEvaluationContextLayer => BaseEvaluationContextLayer
 
 AppContext: Any
 
@@ -35,13 +35,18 @@ Result: Any (though commonly boolean)
 
 
 
-Referents
----------
+EvaluationContextProvider
+-------------------------
 
-The Referents EvaluationContextProvider adds `referent: Any` and `referentType: ReferentType` to the EvaluationContextLayer of a Condition.
+An EvaluationContextProvider extends the a BaseEvaluationContextLayer, and is the way to ease writing succinct queries.  Normally, you don't hand a plain Provider straight to the Evaluator factory, rather you use a EvaluationContextProvider Factory to configure that Provider before handing it off.
+
+
+### Referents
+
+The Referents EvaluationContextProvider adds `referent: Any` and `referentType: ReferentType` to the EvaluationContextLayer of a Condition.  The exposed function is a Factory that you pass configuration to.
 
 ```
-Referents: EvaluationContextProvider
+Referents: ReferentsProviderParamaters => EvaluationContextProvider
 
 ReferentsProviderParamaters: {
 	default: {
@@ -86,3 +91,5 @@ const or = ({ parameter, evaluate }) => {
 	return parameter.some( evaluate );
 }
 ```
+
+### Referents
