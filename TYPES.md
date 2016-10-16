@@ -2,17 +2,17 @@ Type Descriptions
 =================
 
 ```
-Evaluator: ( Predicates, Array<EvaluationContextProvider> ) => AppContext => Condition => Result
+Evaluator: ( PredicateMap, Array<EvaluationContextProvider> ) => AppContext => Condition => Result
 ```
 
-Then, supply the Predicates, EvaluationContextProviders, and AppContext and we get a (Condition => Result).
+Then, supply the PredicateMap, EvaluationContextProviders, and AppContext and we get a (Condition => Result).
 
 ```
-Predicates: { [PredicateName: string]: Predicate }
+PredicateMap: { [PredicateName: string]: Predicate }
 
 Predicate: EvaluationContextLayer => Result
 
-EvaluationContextProvider: Context => BaseEvaluationContextLayer => BaseEvaluationContextLayer
+EvaluationContextProvider: AppContext => BaseEvaluationContextLayer => BaseEvaluationContextLayer
 
 AppContext: Any
 

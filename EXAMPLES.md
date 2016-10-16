@@ -5,23 +5,21 @@ Some Examples
 
 ```json
 {
-	"condition": {
-		"thing": "That Other Thing",
-		"isThingy": true,
-		"any": {
-			"are": true,
-			"of": [
-				{ "isBooped": true },
-				{ "isBeeped": true }
-			]
-		},
-		"every": {
-			"are": true,
-			"of": [
-				{ "hasTouched": "dingy" },
-				{ "hasTouched": "bloopy" }
-			]
-		}
+	"thing": "That Other Thing",
+	"isThingy": true,
+	"any": {
+		"are": true,
+		"of": [
+			{ "isBooped": true },
+			{ "isBeeped": true }
+		]
+	},
+	"every": {
+		"are": true,
+		"of": [
+			{ "hasTouched": "dingy" },
+			{ "hasTouched": "bloopy" }
+		]
 	}
 }
 ```
@@ -29,19 +27,18 @@ Some Examples
 ### Yaml
 
 ```yaml
-condition:
-  thing: That Other Thing
-  isThingy: true
-  any:
-    are: true
-    of:
-      - isBooped: true
-      - isBeeped: true
-  every:
-    are: true
-    of:
-      - hasTouched: dingy
-      - hasTouched: bloopy
+thing: That Other Thing
+isThingy: true
+any:
+  are: true
+  of:
+    - isBooped: true
+    - isBeeped: true
+every:
+  are: true
+  of:
+    - hasTouched: dingy
+    - hasTouched: bloopy
 ```
 
 ### XML
