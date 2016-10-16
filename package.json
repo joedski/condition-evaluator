@@ -1,7 +1,7 @@
 {
   "name": "condition-evaluator",
   "version": "0.0.0",
-  "description": "Evaluator for Simple Declarative Condition DSLs.",
+  "description": "Evaluator for Simple Declarative Condition DSLs written in JSON or YAML.",
   "main": "lib/index.js",
   "scripts": {
     "test": "ava"
@@ -10,11 +10,23 @@
     "condition",
     "conditional",
     "dsl",
-    "evaluator"
+    "evaluator",
+    "json",
+    "yaml"
   ],
   "author": "Joseph Sikorski <joedski@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "ava": "^0.16.0"
+  },
+  "ava": {
+    "babel": "inherit",
+    "files": [
+      "test/*.js",
+      "!_*"
+    ],
+    "require": [
+      "babel-register"
+    ]
   }
 }

@@ -1,11 +1,12 @@
 
 export default referents => {
-	let referents = { ...referents };
+	referents = { ...referents };
 
 	let defaultReferentDefinition = referents.default;
 	delete referents.default;
 
 	// NOTE: This supports only one default.
+	// TODO: What if we don't provide a default?
 	let defaultReferentDefinitionType = Object.keys( defaultReferentDefinition )[ 0 ];
 
 	let defaultReferent = {
@@ -13,7 +14,7 @@ export default referents => {
 		selector: defaultReferentDefinition[ defaultReferentDefinitionType ],
 	};
 
-	let referentTypes = Object.keys( referents );
+	// let referentTypes = Object.keys( referents );
 
 	return appContext => evalContext => {
 		let { condition } = evalContext;
@@ -53,7 +54,7 @@ export default referents => {
 
 		return {
 			...evalContext,
-			{ condition: conditionWithoutRefs },
+			...{ condition: conditionWithoutRefs },
 			nextReferent
 		};
 	};

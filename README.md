@@ -33,7 +33,7 @@ export const currentPage = ( state ) => {
 ```js
 // app/condition/evaluate.js
 import Evaluate from 'condition-evaluator';
-import Referents from 'condition-evaluator/providers/referents';
+import Referent from 'condition-evaluator/providers/referent';
 import basicPredicates from 'condition-evaluator/predicates';
 
 import { page, currentPage } from '../selectors';
@@ -45,7 +45,7 @@ export default Evaluate({
   // adds our app-specific predicates.
   ...predicates
 }, [
-  Referents({
+  Referent({
     default: { page: currentPage },
     page: page
   })
