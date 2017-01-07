@@ -64,12 +64,14 @@ Creates the condition evaluator using the supplied PredicateMap and EvaluationCo
 
 Condition Evaluator comes with one EvaluationContextProvider: Referents, which has the following type:
 
-`ReferentsKeySelectorMap => EvaluationContextProvider`
+`ReferentsConfig => EvaluationContextProvider`
 
-- ReferentsKeySelectorMap: `{ default: DefaultReferentMapping, [ReferentKey: string]: ReferentSelector }` Object mapping keys to your Selectors.
-  - default: `DefaultReferentMapping: { [ReferentKey: string]: DefaultReferentSelector }` A special key which provides a mapping to use in case there are no ReferentKeys on a Condition.
-    - Usually, the ReferentKey will be the same as one of the ReferentKeys in the rest of the ReferentsKeySelectorMap.
-    - Omitting this means Conditions with no defined ReferentKey will also have no Referent.
+- ReferentsConfig: `{ nameInContext?: string, default: DefaultReferentsMapping, selectors: ReferentsKeySelectorMap }`
+  - nameInContext: The property name to assign to the context.  Default value is `refs`.
+  - default: `DefaultReferentsMapping: { [ReferentKey: string]: DefaultReferentSelector }` A special key which provides a mapping to use in case there are no ReferentKeys on a Condition.
+    - Usually, the ReferentKeys will be the same as some of the ReferentKeys in the ReferentsKeySelectorMap.
+    - Omitting this means Conditions with no defined ReferentKeys will also have no Referents.
+- ReferentsKeySelectorMap: `{ [ReferentKey: string]: ReferentSelector }` Object mapping keys on conditions to your Selectors.
 - ReferentSelector: `( AppContext, ReferentSelectorParameter ) => Referent`
   - AppContext is the context you gave to the Evaluator.
   - ReferentSelectorParameter is the parameter value supplied on the Condition to that Key.
@@ -77,9 +79,10 @@ Condition Evaluator comes with one EvaluationContextProvider: Referents, which h
 - DefaultReferentSelector: `AppContext => Referent`
   - As DefaultReferentSelectors are used when there are no ReferentKeys on a Condition, they also don't have a parameter, instead receiving only the AppContext in which the Evaluator is operating.
 
-The Referents EvaluationContextProvider removes any keys on a Condition which match one of its ReferentSelectors' keys, using the first one it finds to select from the AppContext a concrete Referent.  If no Referent is specified, it will try to use the DefaultReferentSelector if one is provided.  If no DefaultReferentSelector is provided, then Conditions without any Referent key will have no Referent!  Whether that's a bad thing or not depends on your use case.
+The Referents EvaluationContextProvider removes any keys on a Condition which match one of its ReferentSelectors' keys, using any one it finds to select from the AppContext a concrete Referent.  Where a Condition does not have a key matching a ReferentSelector, and the DefaultReferentsMapping _does_ have one of those keys, the selector specified in the DefaultReferentsMapping will be used to select a concrete Referent from the AppContext.  If no DefaultReferentSelectors are provided, then Conditions without any Referent key will have no Referent!  Whether that's a bad thing or not depends on your use case.
 
 Referents is exported as a Factory, so to get the actual EvaluationContextProvider that you give to Evaluator, you need to call the exported function with a parameter, in this case being the key-to-ReferentSelector mapping.
+
 
 
 

@@ -1,6 +1,6 @@
 
 import Evaluate from 'condition-evaluator';
-import Referent from 'condition-evaluator/providers/referent';
+import Referents from 'condition-evaluator/providers/referents';
 import * as basicPredicates from '../src/predicates';
 
 import { page, currentPage } from '../selectors';
@@ -10,7 +10,7 @@ export default Evaluate({
   ...basicPredicates,
   ...predicates
 }, [
-  Referent({
+  Referents({
     default: { page: currentPage },
     page: page
   })
