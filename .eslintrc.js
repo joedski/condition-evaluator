@@ -1,6 +1,9 @@
 module.exports = {
 	"extends": [
-	  "eslint:recommended"
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:flowtype/recommended"
 	],
 	"parser": "babel-eslint",
 	"parserOptions": {
@@ -11,5 +14,11 @@ module.exports = {
 	    "impliedStrict": true,
 	    "modules": true
 	  }
+	},
+	"env": {
+	  "es6": true
+	},
+	"rules": {
+	  "strict": 0
 	}
 };
