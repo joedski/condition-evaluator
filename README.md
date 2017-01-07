@@ -66,9 +66,9 @@ Condition Evaluator comes with one EvaluationContextProvider: Referents, which h
 
 `ReferentsConfig => EvaluationContextProvider`
 
-- ReferentsConfig: `{ nameInContext?: string, default: DefaultReferentsMapping, selectors: ReferentsKeySelectorMap }`
+- ReferentsConfig: `{ nameInContext?: string, defaults: DefaultReferentsMapping, selectors: ReferentsKeySelectorMap }`
   - nameInContext: The property name to assign to the context.  Default value is `refs`.
-  - default: `DefaultReferentsMapping: { [ReferentKey: string]: DefaultReferentSelector }` A special key which provides a mapping to use in case there are no ReferentKeys on a Condition.
+  - defaults: `DefaultReferentsMapping: { [ReferentKey: string]: DefaultReferentSelector }` A special key which provides a mapping to use in case there are no ReferentKeys on a Condition.
     - Usually, the ReferentKeys will be the same as some of the ReferentKeys in the ReferentsKeySelectorMap.
     - Omitting this means Conditions with no defined ReferentKeys will also have no Referents.
 - ReferentsKeySelectorMap: `{ [ReferentKey: string]: ReferentSelector }` Object mapping keys on conditions to your Selectors.
@@ -106,8 +106,8 @@ export default Evaluate({
   ...predicates
 }, [
   Referents({
-    default: { page: currentPage },
-    page: page
+    defaults: { page: currentPage },
+    selectors: { page: page }
   })
 ]);
 ```
@@ -129,8 +129,8 @@ module.exports = Evaluate( Object.assign(
   predicates
 ), [
   Referents({
-    default: { page: selectors.currentPage },
-    page: selectors.page
+    defaults: { page: selectors.currentPage },
+    selectors: { page: selectors.page }
   })
 ]);
 ```
