@@ -1,7 +1,7 @@
 
 import test from 'ava';
 
-import Evaluate from '../src';
+import evaluator from '../src';
 import Referents from '../src/providers/referents';
 import * as basicPredicates from '../src/predicates';
 
@@ -12,15 +12,26 @@ test.beforeEach( t => {
 	};
 
 	let predicates = {
-		isVisited: ({ referent, parameter }) => referent.visited === parameter,
+		isVisited: ({ refs, parameter }) => refs.page.visited === parameter,
 	};
 
-	let referentsProvider = Referents({
-		default: { page: selectors.currentPage },
-		page: selectors.page,
-	});
+	let referentsProviderArgs = {
+		defaults: {
+			page: selectors.currentPage,
+			// Provides an escape hatch to always have the current page available.
+			// Some predicates may depend always on the current page, while
+			// some may depend on whatever page is being talked about.
+			// Which may very well still be the current page.
+			currentPage: selectors.currentPage,
+		},
+		selectors: {
+			page: selectors.page,
+		},
+	};
 
-	let evaluate = Evaluate({
+	let referentsProvider = Referents( referentsProviderArgs );
+
+	let evaluate = evaluator({
 		...basicPredicates,
 		...predicates
 	}, [
@@ -29,6 +40,7 @@ test.beforeEach( t => {
 
 	t.context.selectors = selectors;
 	t.context.predicates = predicates;
+	t.context.referentsProviderArgs = referentsProviderArgs;
 	t.context.referentsProvider = referentsProvider;
 	t.context.evaluate = evaluate;
 });
@@ -48,14 +60,9 @@ test( `instantiating an evaluator with referents should complete successfully`, 
 
 test( `referents provider should not modify its args object`, t => {
 	let { page, currentPage } = t.context.selectors;
-
-	let referentsProviderArgs = {
-		default: { page: currentPage },
-		page: page,
-	};
+	let { referentsProviderArgs } = t.context;
 
 	let referentsProviderArgsPassedIn = { ...referentsProviderArgs };
-
 	let referentsProvider = Referents( referentsProviderArgsPassedIn );
 
 	t.deepEqual( referentsProviderArgs, referentsProviderArgsPassedIn,
@@ -85,8 +92,10 @@ test( `referents provider should, given a proper context, return proper results`
 	let expectedEnhacedContextLayer = {
 		context: appContext,
 		condition: { isVisited: true },
-		referent: appContext.pages[ '3' ],
-		referentType: 'page'
+		refs: {
+			page: appContext.pages[ '3' ],
+			currentPage: appContext.pages[ '2' ],
+		},
 	};
 
 	let { referentsProvider } = t.context;
@@ -95,7 +104,7 @@ test( `referents provider should, given a proper context, return proper results`
 	t.deepEqual( expectedEnhacedContextLayer, calculatedEnhacedContextLayer,
 		`should yield an enhanced EvaluationContextLayer, having referent and referentType` );
 
-	t.is( expectedEnhacedContextLayer.referent, calculatedEnhacedContextLayer.referent,
+	t.is( expectedEnhacedContextLayer.refs.page, calculatedEnhacedContextLayer.refs.page,
 		`referent should refer to the object in memory (at least, with the existing selector)` );
 });
 
@@ -119,6 +128,8 @@ test( `(smoke test) evaluator should evaluate conditions properly`, t => {
 
 	t.true( evalCurrent({ page: '3', isVisited: false }),
 		`in the provided state, page '3' is unvisited` );
+	t.false( evalCurrent({ page: '3', isVisited: true }),
+		`in the provided state, asking if page 3 is visited should return a negative result` );
 	t.true( evalCurrent({ isVisited: true }),
 		`in the provided state, the current page (page '2') is visited` );
 	t.true( evalCurrent({

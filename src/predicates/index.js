@@ -59,8 +59,8 @@ export const every = ({ parameter, evaluate }) => {
 //   { not: condition }
 //   Fancy way of writing { always: true }:
 //     { not: { always: false } }
-//       (notice how this does not have the same meaning as the english "not always false"...
-//       probably a good reason not to do this.)
+//       Notice how this does not have the same meaning as the english "not always false"...
+//       Which is probably a good reason not to do this.
 //   Alternate way of writing { any: { are: false, of: [ ... ] } }:
 //     { not: { every: [ ... ] } }
 export const not = ({ parameter, evaluate }) => {
