@@ -1,29 +1,34 @@
 
-const evaluate = ( predicateMap, providers ) => appContext => condition => {
-	let evaluateSub = prevEvalContext => condition => {
-		prevEvalContext = { ...prevEvalContext, condition, evaluate: undefined };
+const evaluate = ( predicateMap, providers = [] ) => appContext => {
+	const providersInContext = providers.map( p => p( appContext ) );
 
-		let evalContext = providers.reduce(
-			( evalContext, provider ) => provider( appContext )( evalContext ),
-			prevEvalContext
-		);
+	return condition => {
+		let evaluateSub = prevEvalContext => condition => {
+			prevEvalContext = { ...prevEvalContext, condition, evaluate: undefined };
 
-		evalContext.evaluate = evaluateSub( evalContext );
+			let evalContext = providersInContext.reduce(
+				( evalContext, provider ) => provider( evalContext ),
+				prevEvalContext
+			);
 
-		let results = evalPredicates( predicateMap, evalContext );
+			// Bind evaluateSub to context.evaluate so predicates can evaluate sub-conditions.
+			evalContext.evaluate = evaluateSub( evalContext );
 
-		// No predicates should return undefined rather than erroring.
-		return results.slice( 1 ).reduce(
-			( result, predResult ) => result && predResult,
-			results[ 0 ]
-		);
-	};
+			let results = evalPredicates( predicateMap, evalContext );
 
-	// create first context, then pass to evaluateSub.
-	let initialContextLayer = { context: appContext };
+			// Having no predicates should return undefined rather than erroring.
+			return results.reduce(
+				( result, predResult ) => result && predResult,
+				true
+			);
+		};
 
-	return evaluateSub( initialContextLayer )( condition );
-}
+		// create first context, then pass to evaluateSub.
+		let initialContextLayer = { context: appContext };
+
+		return evaluateSub( initialContextLayer )( condition );
+	}
+};
 
 const evalPredicates = ( predicateMap, evalContext ) => {
 	let { condition } = evalContext;
