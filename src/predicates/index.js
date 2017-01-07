@@ -10,26 +10,19 @@
 //   { any: [ ...conditions ] }
 //     equivalent to { any: { are: true, of: [ ...conditions ] } }
 export const any = ({ parameter, evaluate }) => {
-	let subConditions;
-	let compareValue;
-
 	if( Array.isArray( parameter ) ) {
-		subConditions = parameter;
-	}
-	else {
-		subConditions = parameter.of;
-	}
-
-	if( ! Array.isArray( parameter ) && 'are' in parameter ) {
-		compareValue = parameter.are;
-
-		return subConditions.some(
-			condition => evaluate( condition ) === compareValue
-		);
-	}
-	else {
+		let subConditions = parameter;
 		return subConditions.some( evaluate );
 	}
+
+	const {
+		of: subConditions,
+		are: compareValue
+	} = parameter;
+
+	return subConditions.some(
+		condition => evaluate( condition ) === compareValue
+	);
 };
 
 // every: ({ are: Any, of: Array<Condition> } | Array<Condition>) => boolean
@@ -43,26 +36,19 @@ export const any = ({ parameter, evaluate }) => {
 //   { every: [ ...conditions ] }
 //     equivalent to { every: { are: true, of: [ ...conditions ] } }
 export const every = ({ parameter, evaluate }) => {
-	let subConditions;
-	let compareValue;
-
 	if( Array.isArray( parameter ) ) {
-		subConditions = parameter;
-	}
-	else {
-		subConditions = parameter.of;
-	}
-
-	if( ! Array.isArray( parameter ) && 'are' in parameter ) {
-		compareValue = parameter.are;
-
-		return subConditions.every(
-			condition => evaluate( condition ) === compareValue
-		);
-	}
-	else {
+		let subConditions = parameter;
 		return subConditions.every( evaluate );
 	}
+
+	const {
+		of: subConditions,
+		are: compareValue
+	} = parameter;
+
+	return subConditions.every(
+		condition => evaluate( condition ) === compareValue
+	);
 };
 
 // not: Condition => boolean
@@ -73,6 +59,8 @@ export const every = ({ parameter, evaluate }) => {
 //   { not: condition }
 //   Fancy way of writing { always: true }:
 //     { not: { always: false } }
+//       (notice how this does not have the same meaning as the english "not always false"...
+//       probably a good reason not to do this.)
 //   Alternate way of writing { any: { are: false, of: [ ... ] } }:
 //     { not: { every: [ ... ] } }
 export const not = ({ parameter, evaluate }) => {
@@ -91,3 +79,14 @@ export const not = ({ parameter, evaluate }) => {
 export const always = ({ parameter }) => {
 	return parameter;
 };
+
+// otherwise: Any => Any
+//
+// Provided as an alias of `always` that may be more meaninful in some cases.
+//
+// Use:
+//   { otherwise: anyValueHere }
+//   Common cases:
+//     { otherwise: true }
+//     { otherwise: false }
+export const otherwise = always;
