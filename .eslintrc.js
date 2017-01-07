@@ -5,6 +5,10 @@ module.exports = {
     "plugin:import/warnings",
     "plugin:flowtype/recommended"
 	],
+	"plugins": [
+	  "flowtype",
+	  "import"
+	],
 	"parser": "babel-eslint",
 	"parserOptions": {
 	  "ecmaVersion": 6,
