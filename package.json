@@ -1,7 +1,7 @@
 {
   "name": "condition-evaluator",
   "description": "Evaluator for Simple Declarative Condition DSLs written in JSON or YAML.",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib es",
