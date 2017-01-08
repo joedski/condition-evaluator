@@ -59,11 +59,11 @@ test( `instantiating an evaluator with referents should complete successfully`, 
 //////// Referents Provider
 
 test( `referents provider should not modify its args object`, t => {
-	let { page, currentPage } = t.context.selectors;
+	// let { page, currentPage } = t.context.selectors;
 	let { referentsProviderArgs } = t.context;
 
 	let referentsProviderArgsPassedIn = { ...referentsProviderArgs };
-	let referentsProvider = Referents( referentsProviderArgsPassedIn );
+	Referents( referentsProviderArgsPassedIn );
 
 	t.deepEqual( referentsProviderArgs, referentsProviderArgsPassedIn,
 		`the args passed in should be identical, no deletions` );

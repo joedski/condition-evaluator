@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rimraf lib es",
     "test": "ava",
+    "test:headless": "ava --tap",
     "test:lint": "eslint src",
     "build": "npm run build:commonjs && npm run build:es",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
