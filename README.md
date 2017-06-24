@@ -186,39 +186,44 @@ Quick Example
 > Note: Written in ES6.
 
 ```js
-//////// Predicates
+//////// Predicates: my-app/condition/predicates.js
 
-const isVisited = ({ referent, parameter }) => {
+export const isVisited = ({ referent, parameter }) => {
   return referent.visited === parameter;
 };
+```
 
-//////// Selectors
+```js
+//////// Selectors: my-app/selectors/index.js
 
-const page = ( state, pageId ) => {
+export const page = ( state, pageId ) => {
   return state.pages[ pageId ];
 }
 
-const currentPage = ( state ) => {
+export const currentPage = ( state ) => {
   return page( state, state.interaction.currentPage );
 }
+```
 
-//////// Our Evaluator
+```js
+//////// Our Evaluator: my-app/condition/evaluate.js
 
 import Evaluate from 'condition-evaluator';
-import Referent from 'condition-evaluator/providers/referent';
+import Referents from 'condition-evaluator/providers/referents';
 import * as basicPredicates from 'condition-evaluator/predicates';
 
-import { page, currentPage } from '../selectors';
-import * as predicates from './predicates';
+import { page, currentPage } from 'my-app/selectors';
+import * as predicates from 'my-app/condition/predicates';
 
 const evaluate = Evaluate({
   // adds `any`, `every`, and `not`.
   ...basicPredicates,
-  page, currentPage
+  // adds our 'isVisited' predicate.
+  ...predicates,
 }, [
-  Referent({
-    default: { page: currentPage },
-    page: page
+  Referents({
+    defaults: { page: currentPage },
+    selectors: { page: page },
   })
 ]);
 
@@ -235,7 +240,7 @@ let state = {
   }
 };
 
-let evalCurrentCondition = evalCondition( state );
+let evalCurrentCondition = evaluate( state );
 
 evalCurrentCondition({ page: 3, isVisited: false }) // => true!
 evalCurrentCondition({ isVisited: false }) // => false!  page 2 .visited === true.
